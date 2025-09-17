@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/bradleyjkemp/sigma-go"
 	"github.com/bradleyjkemp/sigma-go/evaluator/modifiers"
 )
@@ -85,12 +86,18 @@ type Result struct {
 // Event should be some form a map[string]interface{} or map[string]string
 type Event interface{}
 
+type Matcher interface {
+	Select(s string) interface{}
+}
+
 func eventValue(e Event, key string) interface{} {
 	switch evt := e.(type) {
 	case map[string]string:
 		return evt[key]
 	case map[string]interface{}:
 		return evt[key]
+	case Matcher:
+		return evt.Select(key)
 	default:
 		return ""
 	}

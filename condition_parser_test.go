@@ -18,6 +18,17 @@ func TestParseCondition(t *testing.T) {
 		{"a | count(b) > 0", Condition{Search: SearchIdentifier{"a"}, Aggregation: Comparison{Func: Count{Field: "b"}, Op: GreaterThan, Threshold: 0}}},
 		{"a | count(b) >= 0", Condition{Search: SearchIdentifier{"a"}, Aggregation: Comparison{Func: Count{Field: "b"}, Op: GreaterThanEqual, Threshold: 0}}},
 		{"note and pad", Condition{Search: And{SearchIdentifier{"note"}, SearchIdentifier{"pad"}}}},
+		{"(selection1 and not 1 of filter_*) or 1 of selection_5136_*", Condition{Search: Or{
+			And{
+				SearchIdentifier{"selection1"},
+				Not{
+					OneOfPattern{Pattern: "filter_*"},
+				},
+			},
+			OneOfPattern{Pattern: "selection_5136_*"},
+		},
+		},
+		},
 	}
 
 	for _, tc := range tt {
